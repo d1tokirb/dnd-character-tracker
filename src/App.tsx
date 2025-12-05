@@ -119,7 +119,20 @@ function App() {
 
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // ... (session useEffect)
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Load ALL characters for the user
   useEffect(() => {
