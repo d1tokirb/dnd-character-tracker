@@ -234,7 +234,7 @@ export const Spells: React.FC<SpellsProps> = ({
           background-color: rgba(255, 255, 255, 0.03);
           border-bottom: 1px solid var(--border-color);
           border-radius: 0;
-          padding: 4px 8px;
+          padding: 4px 0; /* Removed horizontal padding */
         }
         .spell-item-container:first-child {
           border-top: 1px solid var(--border-color);
@@ -244,23 +244,27 @@ export const Spells: React.FC<SpellsProps> = ({
           justify-content: space-between;
           align-items: center;
           width: 100%;
+          padding: 0 8px; /* Add padding to item instead to keep delete btn from edge */
         }
         .spell-info {
           display: flex;
           align-items: center;
           gap: var(--spacing-sm);
           flex: 1;
-          min-width: 0; /* Allow text truncation if needed */
+          min-width: 0;
+          justify-content: flex-start; /* Explicitly align left */
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
           flex-shrink: 0;
+          margin: 0; /* Remove default margins */
         }
         .spell-name {
           cursor: pointer;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          text-align: left; /* Force left align */
         }
         .spell-name:hover {
           color: var(--accent-gold);
