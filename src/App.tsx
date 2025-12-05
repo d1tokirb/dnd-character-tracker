@@ -70,29 +70,7 @@ const INITIAL_CHARACTER: Character = {
   notes: '',
 };
 
-// XP Table for level calculation
-const XP_TABLE: { [level: number]: number } = {
-  1: 0,
-  2: 300,
-  3: 900,
-  4: 2700,
-  5: 6500,
-  6: 14000,
-  7: 23000,
-  8: 34000,
-  9: 48000,
-  10: 64000,
-  11: 85000,
-  12: 100000,
-  13: 120000,
-  14: 140000,
-  15: 165000,
-  16: 195000,
-  17: 225000,
-  18: 265000,
-  19: 305000,
-  20: 355000,
-};
+
 
 import { CharacterSelection } from './components/CharacterSelection';
 
@@ -526,7 +504,7 @@ function App() {
             </div>
           </div>
           <div className="app-title">
-            <h1>D&D 5e (Updated)</h1>
+            <h1>D&D 5e</h1>
             <div className="header-actions">
               <button className="switch-char-btn" onClick={() => setSelectedCharacterId(null)}>
                 Switch Character
