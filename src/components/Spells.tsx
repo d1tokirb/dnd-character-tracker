@@ -223,7 +223,8 @@ export const Spells: React.FC<SpellsProps> = ({
         }
         .spells-at-level {
           list-style: none;
-          padding-left: var(--spacing-sm);
+          padding: 0;
+          margin: 0;
         }
         .spell-item-container {
           display: flex;
@@ -232,20 +233,24 @@ export const Spells: React.FC<SpellsProps> = ({
         }
         .spell-item {
           display: flex;
-          justify-content: space-between;
           align-items: center;
           padding: 4px 0;
+          gap: var(--spacing-sm);
+          width: 100%;
         }
         .spell-info {
           display: flex;
           align-items: center;
           gap: var(--spacing-sm);
+          flex: 1;
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
+          margin: 0;
         }
         .spell-name {
           cursor: pointer;
+          text-align: left;
         }
         .spell-name:hover {
           color: var(--accent-gold);
@@ -254,16 +259,34 @@ export const Spells: React.FC<SpellsProps> = ({
           color: var(--accent-gold);
           text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
         }
+        .remove-btn {
+          background: transparent;
+          border: none;
+          color: var(--text-secondary);
+          cursor: pointer;
+          padding: 0 4px;
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+        .spell-item:hover .remove-btn {
+          opacity: 1;
+        }
+        .remove-btn:hover {
+          color: var(--accent-red);
+        }
         .spell-description {
-          padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm) 28px;
+          padding: var(--spacing-xs) 0 var(--spacing-sm) 24px;
           color: var(--text-secondary);
           font-size: 0.9rem;
           font-style: italic;
+          text-align: left;
         }
         .empty-msg {
           color: var(--text-secondary);
           font-style: italic;
           font-size: 0.8rem;
+          text-align: left;
+          padding: 4px 0;
         }
       `}</style>
     </div>
