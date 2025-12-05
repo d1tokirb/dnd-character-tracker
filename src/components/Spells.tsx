@@ -224,8 +224,8 @@ export const Spells: React.FC<SpellsProps> = ({
         .spells-at-level {
           list-style: none;
           padding: 0;
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          display: flex;
+          flex-direction: column;
           gap: var(--spacing-sm);
         }
         .spell-item-container {
@@ -234,18 +234,19 @@ export const Spells: React.FC<SpellsProps> = ({
           background-color: rgba(255, 255, 255, 0.03);
           border: 1px solid var(--border-color);
           border-radius: 4px;
-          padding: 4px 8px;
+          padding: 8px 12px;
         }
         .spell-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
           width: 100%;
+          gap: var(--spacing-md);
         }
         .spell-info {
           display: flex;
           align-items: center;
-          gap: var(--spacing-sm);
+          gap: var(--spacing-md);
           flex: 1;
           overflow: hidden;
         }
@@ -257,6 +258,9 @@ export const Spells: React.FC<SpellsProps> = ({
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          font-weight: 500;
+          flex: 1;
+          text-align: left;
         }
         .spell-name:hover {
           color: var(--accent-gold);
