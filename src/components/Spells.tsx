@@ -234,17 +234,18 @@ export const Spells: React.FC<SpellsProps> = ({
           background-color: rgba(255, 255, 255, 0.03);
           border-bottom: 1px solid var(--border-color);
           border-radius: 0;
-          padding: 4px 0; /* Removed horizontal padding */
+          padding: 4px 0;
+          text-align: left; /* Force left align container */
         }
         .spell-item-container:first-child {
           border-top: 1px solid var(--border-color);
         }
         .spell-item {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start; /* Align start instead of space-between */
           align-items: center;
           width: 100%;
-          padding: 0 8px; /* Add padding to item instead to keep delete btn from edge */
+          padding: 0; /* Remove all horizontal padding */
         }
         .spell-info {
           display: flex;
@@ -252,19 +253,24 @@ export const Spells: React.FC<SpellsProps> = ({
           gap: var(--spacing-sm);
           flex: 1;
           min-width: 0;
-          justify-content: flex-start; /* Explicitly align left */
+          justify-content: flex-start;
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
           flex-shrink: 0;
-          margin: 0; /* Remove default margins */
+          margin: 0;
+          margin-right: 8px; /* Add spacing here instead of gap if needed, but gap handles it */
+        }
+        .remove-btn {
+          margin-left: auto; /* Push to right */
+          padding: 0 8px;
         }
         .spell-name {
           cursor: pointer;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          text-align: left; /* Force left align */
+          text-align: left;
         }
         .spell-name:hover {
           color: var(--accent-gold);
