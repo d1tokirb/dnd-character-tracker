@@ -230,19 +230,20 @@ export const Spells: React.FC<SpellsProps> = ({
           display: flex;
           flex-direction: column;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          width: 100%;
         }
         .spell-item {
           display: flex;
+          justify-content: space-between;
           align-items: center;
           padding: 4px 0;
-          gap: var(--spacing-sm);
           width: 100%;
         }
         .spell-info {
           display: flex;
           align-items: center;
           gap: var(--spacing-sm);
-          flex: 1;
+          text-align: left;
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
@@ -275,7 +276,7 @@ export const Spells: React.FC<SpellsProps> = ({
           color: var(--accent-red);
         }
         .spell-description {
-          padding: var(--spacing-xs) 0 var(--spacing-sm) 24px;
+          padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm) 28px;
           color: var(--text-secondary);
           font-size: 0.9rem;
           font-style: italic;
