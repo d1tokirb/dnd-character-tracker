@@ -107,16 +107,6 @@ function App() {
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
   const [character, setCharacter] = useState<Character>(INITIAL_CHARACTER);
 
-  console.log('App Render:', { session: !!session, loading, selectedCharacterId });
-
-  useEffect(() => {
-    console.log('Session changed:', !!session);
-  }, [session]);
-
-  useEffect(() => {
-    console.log('SelectedCharacterId changed:', selectedCharacterId);
-  }, [selectedCharacterId]);
-
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
