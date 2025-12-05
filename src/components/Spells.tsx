@@ -222,30 +222,42 @@ export const Spells: React.FC<SpellsProps> = ({
           font-size: 0.8rem;
         }
         .spells-at-level {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: var(--spacing-sm);
           list-style: none;
-          padding-left: var(--spacing-sm);
+          padding: 0;
         }
         .spell-item-container {
           display: flex;
           flex-direction: column;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          background-color: rgba(255, 255, 255, 0.03);
+          border: 1px solid var(--border-color);
+          border-radius: 4px;
+          padding: var(--spacing-xs) var(--spacing-sm);
         }
         .spell-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 4px 0;
+          width: 100%;
         }
         .spell-info {
           display: flex;
           align-items: center;
           gap: var(--spacing-sm);
+          flex: 1;
+          min-width: 0; /* Allow text truncation if needed */
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
+          flex-shrink: 0;
         }
         .spell-name {
           cursor: pointer;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .spell-name:hover {
           color: var(--accent-gold);
@@ -255,12 +267,16 @@ export const Spells: React.FC<SpellsProps> = ({
           text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
         }
         .spell-description {
-          padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm) 28px;
+          margin-top: var(--spacing-xs);
+          padding-top: var(--spacing-xs);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
           color: var(--text-secondary);
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-style: italic;
+          line-height: 1.4;
         }
         .empty-msg {
+          grid-column: 1 / -1;
           color: var(--text-secondary);
           font-style: italic;
           font-size: 0.8rem;
