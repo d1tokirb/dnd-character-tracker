@@ -223,8 +223,8 @@ export const Spells: React.FC<SpellsProps> = ({
         }
         .spells-at-level {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: var(--spacing-sm);
+          grid-template-columns: 1fr;
+          gap: 4px;
           list-style: none;
           padding: 0;
         }
@@ -232,9 +232,12 @@ export const Spells: React.FC<SpellsProps> = ({
           display: flex;
           flex-direction: column;
           background-color: rgba(255, 255, 255, 0.03);
-          border: 1px solid var(--border-color);
-          border-radius: 4px;
-          padding: var(--spacing-xs) var(--spacing-sm);
+          border-bottom: 1px solid var(--border-color);
+          border-radius: 0;
+          padding: 4px 8px;
+        }
+        .spell-item-container:first-child {
+          border-top: 1px solid var(--border-color);
         }
         .spell-item {
           display: flex;
