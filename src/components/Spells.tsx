@@ -189,6 +189,7 @@ export const Spells: React.FC<SpellsProps> = ({
           display: flex;
           flex-direction: column;
           gap: var(--spacing-md);
+          align-items: stretch; /* Ensure full width */
         }
         .level-header {
           display: flex;
@@ -197,11 +198,13 @@ export const Spells: React.FC<SpellsProps> = ({
           border-bottom: 1px solid var(--border-color);
           padding-bottom: 4px;
           margin-bottom: 8px;
+          text-align: left;
         }
         .level-header h4 {
           margin: 0;
           color: var(--accent-blue);
           font-size: 0.9rem;
+          text-align: left;
         }
         .slots-tracker {
           display: flex;
@@ -227,6 +230,8 @@ export const Spells: React.FC<SpellsProps> = ({
           gap: 4px;
           list-style: none;
           padding: 0;
+          text-align: left;
+          width: 100%;
         }
         .spell-item-container {
           display: flex;
@@ -235,17 +240,20 @@ export const Spells: React.FC<SpellsProps> = ({
           border-bottom: 1px solid var(--border-color);
           border-radius: 0;
           padding: 4px 0;
-          text-align: left; /* Force left align container */
+          text-align: left;
+          width: 100%;
+          align-items: stretch;
         }
         .spell-item-container:first-child {
           border-top: 1px solid var(--border-color);
         }
         .spell-item {
           display: flex;
-          justify-content: flex-start; /* Align start instead of space-between */
+          justify-content: flex-start;
           align-items: center;
           width: 100%;
-          padding: 0; /* Remove all horizontal padding */
+          padding: 0;
+          text-align: left;
         }
         .spell-info {
           display: flex;
@@ -254,15 +262,16 @@ export const Spells: React.FC<SpellsProps> = ({
           flex: 1;
           min-width: 0;
           justify-content: flex-start;
+          text-align: left;
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
           flex-shrink: 0;
           margin: 0;
-          margin-right: 8px; /* Add spacing here instead of gap if needed, but gap handles it */
+          margin-right: 8px;
         }
         .remove-btn {
-          margin-left: auto; /* Push to right */
+          margin-left: auto;
           padding: 0 8px;
         }
         .spell-name {
@@ -271,6 +280,8 @@ export const Spells: React.FC<SpellsProps> = ({
           overflow: hidden;
           text-overflow: ellipsis;
           text-align: left;
+          display: block; /* Ensure text-align works */
+          width: 100%;
         }
         .spell-name:hover {
           color: var(--accent-gold);
@@ -287,12 +298,14 @@ export const Spells: React.FC<SpellsProps> = ({
           font-size: 0.85rem;
           font-style: italic;
           line-height: 1.4;
+          text-align: left;
         }
         .empty-msg {
           grid-column: 1 / -1;
           color: var(--text-secondary);
           font-style: italic;
           font-size: 0.8rem;
+          text-align: left;
         }
       `}</style>
     </div>
