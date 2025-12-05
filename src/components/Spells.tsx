@@ -189,6 +189,8 @@ export const Spells: React.FC<SpellsProps> = ({
           display: flex;
           flex-direction: column;
           gap: var(--spacing-md);
+          align-items: stretch;
+          width: 100%;
         }
         .level-header {
           display: flex;
@@ -197,34 +199,19 @@ export const Spells: React.FC<SpellsProps> = ({
           border-bottom: 1px solid var(--border-color);
           padding-bottom: 4px;
           margin-bottom: 8px;
+          width: 100%;
         }
         .level-header h4 {
           margin: 0;
           color: var(--accent-blue);
           font-size: 0.9rem;
-        }
-        .slots-tracker {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-xs);
-          font-size: 0.8rem;
-          color: var(--text-secondary);
-        }
-        .slot-inputs {
-          display: flex;
-          align-items: center;
-          gap: 2px;
-        }
-        .slot-inputs input {
-          width: 30px;
-          padding: 2px;
-          text-align: center;
-          font-size: 0.8rem;
+          text-align: left;
         }
         .spells-at-level {
           list-style: none;
           padding: 0;
           margin: 0;
+          width: 100%;
         }
         .spell-item-container {
           display: flex;
@@ -244,6 +231,7 @@ export const Spells: React.FC<SpellsProps> = ({
           align-items: center;
           gap: var(--spacing-sm);
           text-align: left;
+          flex-grow: 1;
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
@@ -252,6 +240,7 @@ export const Spells: React.FC<SpellsProps> = ({
         .spell-name {
           cursor: pointer;
           text-align: left;
+          flex-grow: 1;
         }
         .spell-name:hover {
           color: var(--accent-gold);
@@ -281,6 +270,7 @@ export const Spells: React.FC<SpellsProps> = ({
           font-size: 0.9rem;
           font-style: italic;
           text-align: left;
+          width: 100%;
         }
         .empty-msg {
           color: var(--text-secondary);
@@ -288,6 +278,7 @@ export const Spells: React.FC<SpellsProps> = ({
           font-size: 0.8rem;
           text-align: left;
           padding: 4px 0;
+          width: 100%;
         }
       `}</style>
     </div>
