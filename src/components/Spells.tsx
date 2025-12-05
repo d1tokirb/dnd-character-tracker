@@ -223,29 +223,40 @@ export const Spells: React.FC<SpellsProps> = ({
         }
         .spells-at-level {
           list-style: none;
-          padding-left: var(--spacing-sm);
+          padding: 0;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: var(--spacing-sm);
         }
         .spell-item-container {
           display: flex;
           flex-direction: column;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          background-color: rgba(255, 255, 255, 0.03);
+          border: 1px solid var(--border-color);
+          border-radius: 4px;
+          padding: 4px 8px;
         }
         .spell-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 4px 0;
+          width: 100%;
         }
         .spell-info {
           display: flex;
           align-items: center;
           gap: var(--spacing-sm);
+          flex: 1;
+          overflow: hidden;
         }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
         }
         .spell-name {
           cursor: pointer;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .spell-name:hover {
           color: var(--accent-gold);
