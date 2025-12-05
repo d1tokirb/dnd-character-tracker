@@ -39,8 +39,8 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ details, onC
                     <label>XP</label>
                     <input
                         type="number"
-                        value={details.xp}
-                        onChange={(e) => onChange('xp', parseInt(e.target.value) || 0)}
+                        value={isNaN(details.xp) ? '' : details.xp}
+                        onChange={(e) => onChange('xp', e.target.value === '' ? NaN : parseInt(e.target.value))}
                     />
                 </div>
             </div>

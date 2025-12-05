@@ -87,15 +87,15 @@ export const Spells: React.FC<SpellsProps> = ({
                       <input
                         type="number"
                         min="0"
-                        value={slotInfo?.used || 0}
-                        onChange={(e) => onSlotChange(level, 'used', parseInt(e.target.value) || 0)}
+                        value={isNaN(slotInfo?.used) ? '' : slotInfo?.used ?? 0}
+                        onChange={(e) => onSlotChange(level, 'used', e.target.value === '' ? NaN : parseInt(e.target.value))}
                       />
                       <span>/</span>
                       <input
                         type="number"
                         min="0"
-                        value={slotInfo?.total || 0}
-                        onChange={(e) => onSlotChange(level, 'total', parseInt(e.target.value) || 0)}
+                        value={isNaN(slotInfo?.total) ? '' : slotInfo?.total ?? 0}
+                        onChange={(e) => onSlotChange(level, 'total', e.target.value === '' ? NaN : parseInt(e.target.value))}
                       />
                     </div>
                   </div>

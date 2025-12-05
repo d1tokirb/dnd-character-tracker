@@ -2,45 +2,50 @@ import React from 'react';
 import type { AbilityScores } from '../types';
 
 interface StatsProps {
-    abilities: AbilityScores;
-    onChange: (ability: keyof AbilityScores, value: number) => void;
+  abilities: AbilityScores;
+  onChange: (ability: keyof AbilityScores, value: number) => void;
 }
 
 const ABILITY_NAMES: Record<keyof AbilityScores, string> = {
-    str: 'Strength',
-    dex: 'Dexterity',
-    con: 'Constitution',
-    int: 'Intelligence',
-    wis: 'Wisdom',
-    cha: 'Charisma',
+  str: 'Strength',
+  dex: 'Dexterity',
+  con: 'Constitution',
+  int: 'Intelligence',
+  wis: 'Wisdom',
+  cha: 'Charisma',
 };
 
 export const Stats: React.FC<StatsProps> = ({ abilities, onChange }) => {
-    const calculateModifier = (score: number) => {
-        const mod = Math.floor((score - 10) / 2);
-        return mod >= 0 ? `+${mod}` : `${mod}`;
-    };
+  const calculateModifier = (score: number) => {
+    const mod = Math.floor((score - 10) / 2);
+    return mod >= 0 ? `+${mod}` : `${mod}`;
+  };
 
-    return (
-        <div className="stats-grid">
-            {Object.entries(abilities).map(([key, value]) => {
-                const abilityKey = key as keyof AbilityScores;
-                return (
-                    <div key={key} className="stat-card card">
-                        <h3 className="stat-name">{ABILITY_NAMES[abilityKey]}</h3>
-                        <div className="stat-value-container">
-                            <input
-                                type="number"
-                                className="stat-input"
-                                value={value}
-                                onChange={(e) => onChange(abilityKey, parseInt(e.target.value) || 10)}
-                            />
-                            <div className="stat-modifier">{calculateModifier(value)}</div>
-                        </div>
-                    </div>
-                );
-            })}
-            <style>{`
+  return (
+    <div className="stats-grid">
+      {Object.entries(abilities).map(([key, value]) => {
+        const abilityKey = key as keyof AbilityScores;
+        return (
+          <div key={key} className="stat-card card">
+            <h3 className="stat-name">{ABILITY_NAMES[abilityKey]}</h3>
+            <div className="stat-value-container">
+              <input
+                type="number"
+                className="stat-input"
+                value={isNaN(value) ? '' : value}
+                onChange={(e) => {
+                  const val = e.target.value === '' ? NaN : parseInt(e.target.value);
+                  onChange(abilityKey, val);
+                }}
+              />
+              <div className="stat-modifier">
+                {isNaN(value) ? '0' : calculateModifier(value)}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+      <style>{`
         .stats-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -86,6 +91,6 @@ export const Stats: React.FC<StatsProps> = ({ abilities, onChange }) => {
           z-index: 1;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
