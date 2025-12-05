@@ -526,7 +526,7 @@ function App() {
             </div>
           </div>
           <div className="app-title">
-            <h1>D&D 5e</h1>
+            <h1>D&D 5e (Updated)</h1>
             <div className="header-actions">
               <button className="switch-char-btn" onClick={() => setSelectedCharacterId(null)}>
                 Switch Character
