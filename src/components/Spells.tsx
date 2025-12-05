@@ -107,14 +107,12 @@ export const Spells: React.FC<SpellsProps> = ({
                   <li key={spell.name} className="spell-item-container">
                     <div className="spell-item">
                       <div className="spell-info">
-                        <div className="checkbox-wrapper">
-                          <input
-                            type="checkbox"
-                            checked={spell.prepared}
-                            onChange={() => onTogglePrepared(spell.name)}
-                            title="Prepared?"
-                          />
-                        </div>
+                        <input
+                          type="checkbox"
+                          checked={spell.prepared}
+                          onChange={() => onTogglePrepared(spell.name)}
+                          title="Prepared?"
+                        />
                         <span
                           className={`spell-name ${spell.prepared ? 'prepared' : ''}`}
                           onClick={() => toggleExpand(spell.name)}
@@ -225,7 +223,7 @@ export const Spells: React.FC<SpellsProps> = ({
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 6px 0;
+          padding: 4px 0;
           width: 100%;
         }
         .spell-info {
@@ -235,26 +233,14 @@ export const Spells: React.FC<SpellsProps> = ({
           text-align: left;
           flex-grow: 1;
         }
-        .checkbox-wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 24px;
-          height: 24px;
-          flex-shrink: 0;
-        }
         .spell-info input[type="checkbox"] {
           accent-color: var(--accent-gold);
           margin: 0;
-          width: 16px;
-          height: 16px;
-          cursor: pointer;
         }
         .spell-name {
           cursor: pointer;
           text-align: left;
           flex-grow: 1;
-          line-height: 1.4;
         }
         .spell-name:hover {
           color: var(--accent-gold);
@@ -268,12 +254,9 @@ export const Spells: React.FC<SpellsProps> = ({
           border: none;
           color: var(--text-secondary);
           cursor: pointer;
-          padding: 4px 8px;
+          padding: 0 4px;
           opacity: 0;
           transition: opacity 0.2s;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
         .spell-item:hover .remove-btn {
           opacity: 1;
@@ -282,20 +265,19 @@ export const Spells: React.FC<SpellsProps> = ({
           color: var(--accent-red);
         }
         .spell-description {
-          padding: 0 0 var(--spacing-sm) 40px; /* 24px checkbox + 8px gap + 8px extra */
+          padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm) 28px;
           color: var(--text-secondary);
           font-size: 0.9rem;
           font-style: italic;
           text-align: left;
           width: 100%;
-          line-height: 1.4;
         }
         .empty-msg {
           color: var(--text-secondary);
           font-style: italic;
           font-size: 0.8rem;
           text-align: left;
-          padding: 8px 0 8px 40px;
+          padding: 4px 0;
           width: 100%;
         }
       `}</style>
