@@ -135,9 +135,7 @@ function App() {
             race: row.data.race || 'Unknown'
           }));
           setCharactersList(list);
-
-          // If only one character exists, auto-select it (optional, but good UX)
-          // For now, let's force selection screen unless we want auto-login behavior
+          setSelectedCharacterId(null); // Explicitly reset selection to force screen
         }
       } catch (err) {
         console.error('Error loading characters list:', err);
