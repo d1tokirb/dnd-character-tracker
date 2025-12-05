@@ -179,6 +179,8 @@ export const CharacterSelection: React.FC<CharacterSelectionProps> = ({
           background: rgba(255, 255, 255, 0.02);
           border: 1px dashed var(--border-color);
           cursor: pointer;
+          color: var(--text-secondary);
+          transition: all 0.2s;
         }
         .add-btn:hover {
           background: rgba(212, 175, 55, 0.05);
@@ -188,11 +190,8 @@ export const CharacterSelection: React.FC<CharacterSelectionProps> = ({
         .plus-icon {
           font-size: 2.5rem;
           font-weight: 300;
-          color: var(--text-secondary);
+          color: inherit;
           transition: color 0.2s;
-        }
-        .add-btn:hover .plus-icon {
-          color: var(--accent-gold);
         }
         .create-card form {
           display: flex;
