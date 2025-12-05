@@ -94,51 +94,78 @@ const XP_TABLE: { [level: number]: number } = {
   20: 355000,
 };
 
+import { CharacterSelection } from './components/CharacterSelection';
+
+// ... (imports)
+
 function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Multiple characters state
+  const [charactersList, setCharactersList] = useState<{ id: string; name: string; level: number; class: string; race: string }[]>([]);
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
   const [character, setCharacter] = useState<Character>(INITIAL_CHARACTER);
+
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+  // ... (session useEffect)
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Load character data
+  // Load ALL characters for the user
   useEffect(() => {
     if (!session) return;
 
-    const loadCharacter = async () => {
+    const loadCharactersList = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('characters')
+          .select('id, name, data')
+          .eq('user_id', session.user.id);
+
+        if (error) throw error;
+
+        if (data) {
+          const list = data.map(row => ({
+            id: row.id,
+            name: row.data.name || 'Unknown',
+            level: row.data.level || 1,
+            class: row.data.class || 'Unknown',
+            race: row.data.race || 'Unknown'
+          }));
+          setCharactersList(list);
+
+          // If only one character exists, auto-select it (optional, but good UX)
+          // For now, let's force selection screen unless we want auto-login behavior
+        }
+      } catch (err) {
+        console.error('Error loading characters list:', err);
+      }
+    };
+
+    loadCharactersList();
+  }, [session]);
+
+  // Load SELECTED character data
+  useEffect(() => {
+    if (!session || !selectedCharacterId) return;
+
+    const loadSelectedCharacter = async () => {
+      setLoading(true);
       try {
         const { data, error } = await supabase
           .from('characters')
           .select('*')
-          .eq('user_id', session.user.id)
+          .eq('id', selectedCharacterId)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error loading character:', error);
-        }
+        if (error) throw error;
 
         if (data) {
           const loadedData = data.data || {};
-
-          // Robust merge to handle missing/null nested objects
+          // Robust merge (same as before)
           const mergedChar: Character = {
             ...INITIAL_CHARACTER,
             ...loadedData,
-            // Deep merge objects that might be null/undefined in loadedData
             abilities: { ...INITIAL_CHARACTER.abilities, ...(loadedData.abilities || {}) },
             hp: { ...INITIAL_CHARACTER.hp, ...(loadedData.hp || {}) },
             details: { ...INITIAL_CHARACTER.details, ...(loadedData.details || {}) },
@@ -146,92 +173,130 @@ function App() {
               slots: { ...INITIAL_CHARACTER.spells.slots, ...(loadedData.spells?.slots || {}) },
               list: loadedData.spells?.list || INITIAL_CHARACTER.spells.list,
             },
-            // Arrays can just fallback to initial if missing
             skills: loadedData.skills || INITIAL_CHARACTER.skills,
             savingThrows: loadedData.savingThrows || INITIAL_CHARACTER.savingThrows,
             inventory: loadedData.inventory || INITIAL_CHARACTER.inventory,
             features: loadedData.features || INITIAL_CHARACTER.features,
           };
-
           setCharacter(mergedChar);
-        } else {
-          // Create initial character if none exists
-          const { error: insertError } = await supabase
-            .from('characters')
-            .insert([
-              {
-                user_id: session.user.id,
-                name: INITIAL_CHARACTER.name,
-                data: INITIAL_CHARACTER
-              }
-            ]);
-
-          if (insertError) {
-            console.error('Error creating character:', insertError);
-          }
         }
       } catch (err) {
-        console.error('Unexpected error loading character:', err);
+        console.error('Error loading selected character:', err);
       } finally {
+        setLoading(false);
         setIsInitialLoad(false);
       }
     };
 
-    loadCharacter();
-  }, [session]);
+    loadSelectedCharacter();
+  }, [selectedCharacterId, session]);
 
-  // Save character data (debounced)
+  // Create New Character
+  const handleCreateCharacter = async (name: string) => {
+    if (!session) return;
+
+    const newCharData = { ...INITIAL_CHARACTER, name };
+
+    try {
+      const { data, error } = await supabase
+        .from('characters')
+        .insert([
+          {
+            user_id: session.user.id,
+            name: name,
+            data: newCharData
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        // Add to list and select it
+        setCharactersList(prev => [...prev, {
+          id: data.id,
+          name: data.data.name,
+          level: data.data.level,
+          class: data.data.class,
+          race: data.data.race
+        }]);
+        setSelectedCharacterId(data.id);
+      }
+    } catch (err) {
+      console.error('Error creating character:', err);
+    }
+  };
+
+  // Delete Character
+  const handleDeleteCharacter = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('characters')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setCharactersList(prev => prev.filter(c => c.id !== id));
+      if (selectedCharacterId === id) {
+        setSelectedCharacterId(null);
+      }
+    } catch (err) {
+      console.error('Error deleting character:', err);
+    }
+  };
+
+  // Save character data (debounced) - UPDATED to use selectedCharacterId
   useEffect(() => {
-    if (!session || isInitialLoad) return;
+    if (!session || isInitialLoad || !selectedCharacterId) return;
 
     const timer = setTimeout(async () => {
       try {
-        // Check if character exists first
-        const { data: existing } = await supabase
+        await supabase
           .from('characters')
-          .select('id')
-          .eq('user_id', session.user.id)
-          .single();
+          .update({
+            name: character.name,
+            data: character,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedCharacterId); // Update by ID, not user_id
 
-        if (existing) {
-          await supabase
-            .from('characters')
-            .update({
-              name: character.name,
-              data: character,
-              updated_at: new Date().toISOString()
-            })
-            .eq('user_id', session.user.id);
-        }
+        // Update list preview data if name/level/class/race changed
+        setCharactersList(prev => prev.map(c =>
+          c.id === selectedCharacterId
+            ? { ...c, name: character.name, level: character.level, class: character.class, race: character.race }
+            : c
+        ));
       } catch (err) {
         console.error('Error saving character:', err);
       }
-    }, 1000); // 1 second debounce
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [character, session, isInitialLoad]);
+  }, [character, session, isInitialLoad, selectedCharacterId]);
 
-  // Auto-level up based on XP
-  useEffect(() => {
-    let newLevel = 1;
-    for (let lvl = 20; lvl >= 1; lvl--) {
-      if (character.details.xp >= XP_TABLE[lvl]) {
-        newLevel = lvl;
-        break;
-      }
-    }
-
-    if (newLevel !== character.level) {
-      setCharacter(prev => ({ ...prev, level: newLevel }));
-    }
-  }, [character.details.xp]);
-
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
+  // ... (Auto-level effect remains same)
 
   if (!session) {
     return <Auth />;
+  }
+
+  // Render Selection Screen if no character selected
+  if (!selectedCharacterId) {
+    return (
+      <CharacterSelection
+        characters={charactersList}
+        onCreateCharacter={handleCreateCharacter}
+        onSelectCharacter={setSelectedCharacterId}
+        onDeleteCharacter={handleDeleteCharacter}
+        onSignOut={() => supabase.auth.signOut()}
+      />
+    );
+  }
+
+  if (loading) {
+    return <div className="loading">Loading Character...</div>;
   }
 
 
@@ -451,9 +516,14 @@ function App() {
           </div>
           <div className="app-title">
             <h1>D&D 5e</h1>
-            <button className="sign-out-btn" onClick={() => supabase.auth.signOut()}>
-              Sign Out
-            </button>
+            <div className="header-actions">
+              <button className="switch-char-btn" onClick={() => setSelectedCharacterId(null)}>
+                Switch Character
+              </button>
+              <button className="sign-out-btn" onClick={() => supabase.auth.signOut()}>
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
         <div className="container">
@@ -616,7 +686,11 @@ function App() {
           color: var(--text-secondary);
           opacity: 0.5;
         }
-        .sign-out-btn {
+        .header-actions {
+          display: flex;
+          gap: var(--spacing-sm);
+        }
+        .sign-out-btn, .switch-char-btn {
           background: none;
           border: 1px solid var(--border-color);
           color: var(--text-secondary);
@@ -628,6 +702,10 @@ function App() {
         .sign-out-btn:hover {
           border-color: var(--accent-red);
           color: var(--accent-red);
+        }
+        .switch-char-btn:hover {
+          border-color: var(--accent-gold);
+          color: var(--accent-gold);
         }
         .loading {
           display: flex;
