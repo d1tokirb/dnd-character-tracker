@@ -209,6 +209,24 @@ export const Spells: React.FC<SpellsProps> = ({
           font-size: 0.9rem;
           text-align: left;
         }
+        .slots-tracker {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-xs);
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+        }
+        .slot-inputs {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+        }
+        .slot-inputs input {
+          width: 30px;
+          padding: 2px;
+          text-align: center;
+          font-size: 0.8rem;
+        }
         .spells-at-level {
           list-style: none;
           padding: 0;
