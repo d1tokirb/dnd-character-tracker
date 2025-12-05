@@ -10,25 +10,49 @@ interface CombatProps {
   speed: number;
   initiative: number;
   onHpChange: (type: 'current' | 'max' | 'temp', value: number) => void;
+  onStatChange: (field: 'ac' | 'speed' | 'initiative', value: number) => void;
 }
 
-export const Combat: React.FC<CombatProps> = ({ hp, ac, speed, initiative, onHpChange }) => {
+export const Combat: React.FC<CombatProps> = ({ hp, ac, speed, initiative, onHpChange, onStatChange }) => {
   const hpPercent = Math.min((hp.current / hp.max) * 100, 100);
+
+  const handleStatInput = (value: string): number => {
+    if (value === '') return NaN;
+    return parseInt(value);
+  };
 
   return (
     <div className="combat-container card">
       <div className="combat-stats-grid">
         <div className="stat-box">
           <span className="stat-label">Armor Class</span>
-          <span className="stat-value">{ac}</span>
+          <input
+            className="stat-input"
+            type="number"
+            value={isNaN(ac) ? '' : ac}
+            onChange={(e) => onStatChange('ac', handleStatInput(e.target.value))}
+          />
         </div>
         <div className="stat-box">
           <span className="stat-label">Initiative</span>
-          <span className="stat-value">{initiative >= 0 ? `+${initiative}` : initiative}</span>
+          <input
+            className="stat-input"
+            type="number"
+            value={isNaN(initiative) ? '' : initiative}
+            onChange={(e) => onStatChange('initiative', handleStatInput(e.target.value))}
+          />
         </div>
         <div className="stat-box">
           <span className="stat-label">Speed</span>
-          <span className="stat-value">{speed}<span className="unit">ft</span></span>
+          <div className="speed-input-wrapper">
+            <input
+              className="stat-input"
+              type="number"
+              value={isNaN(speed) ? '' : speed}
+              onChange={(e) => onStatChange('speed', handleStatInput(e.target.value))}
+            />
+            <span className="unit">ft</span>
+          </div>
         </div>
       </div>
 
@@ -45,7 +69,7 @@ export const Combat: React.FC<CombatProps> = ({ hp, ac, speed, initiative, onHpC
         <div className="hp-bar-track">
           <div
             className="hp-bar-fill"
-            style={{ width: `${hpPercent}%` }}
+            style={{ width: `${isNaN(hpPercent) ? 0 : hpPercent}%` }}
           />
         </div>
 
@@ -54,24 +78,24 @@ export const Combat: React.FC<CombatProps> = ({ hp, ac, speed, initiative, onHpC
             <label>Current</label>
             <input
               type="number"
-              value={hp.current}
-              onChange={(e) => onHpChange('current', parseInt(e.target.value) || 0)}
+              value={isNaN(hp.current) ? '' : hp.current}
+              onChange={(e) => onHpChange('current', handleStatInput(e.target.value))}
             />
           </div>
           <div className="hp-input-group">
             <label>Max</label>
             <input
               type="number"
-              value={hp.max}
-              onChange={(e) => onHpChange('max', parseInt(e.target.value) || 0)}
+              value={isNaN(hp.max) ? '' : hp.max}
+              onChange={(e) => onHpChange('max', handleStatInput(e.target.value))}
             />
           </div>
           <div className="hp-input-group">
             <label>Temp</label>
             <input
               type="number"
-              value={hp.temp}
-              onChange={(e) => onHpChange('temp', parseInt(e.target.value) || 0)}
+              value={isNaN(hp.temp) ? '' : hp.temp}
+              onChange={(e) => onHpChange('temp', handleStatInput(e.target.value))}
             />
           </div>
         </div>
@@ -104,11 +128,27 @@ export const Combat: React.FC<CombatProps> = ({ hp, ac, speed, initiative, onHpC
           text-transform: uppercase;
           letter-spacing: 1px;
           color: var(--text-secondary);
+          margin-bottom: 4px;
         }
-        .stat-value {
+        .stat-input {
+          width: 100%;
+          background: transparent;
+          border: none;
+          color: var(--text-primary);
           font-size: 1.5rem;
           font-weight: bold;
-          color: var(--text-primary);
+          text-align: center;
+          padding: 0;
+          font-family: var(--font-heading);
+        }
+        .stat-input:focus {
+          outline: none;
+          border-bottom: 1px solid var(--accent-gold);
+        }
+        .speed-input-wrapper {
+          display: flex;
+          align-items: baseline;
+          justify-content: center;
         }
         .unit {
           font-size: 0.8rem;

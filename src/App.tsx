@@ -415,6 +415,13 @@ function App() {
     }));
   };
 
+  const handleCombatChange = (field: 'ac' | 'speed' | 'initiative', value: number) => {
+    setCharacter((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -468,6 +475,7 @@ function App() {
                 speed={character.speed}
                 initiative={character.initiative}
                 onHpChange={handleHpChange}
+                onStatChange={handleCombatChange}
               />
             </section>
 
