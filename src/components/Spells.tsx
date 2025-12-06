@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { AbilityScores } from '../types';
 
 interface SpellsProps {
   slots: { [level: number]: { total: number; used: number } };
@@ -7,6 +8,10 @@ interface SpellsProps {
   onAddSpell: (name: string, level: number, description: string) => void;
   onTogglePrepared: (name: string) => void;
   onRemoveSpell: (name: string) => void;
+  spellcastingAbility: keyof AbilityScores;
+  onAbilityChange: (ability: keyof AbilityScores) => void;
+  saveDC: number;
+  attackBonus: number;
 }
 
 export const Spells: React.FC<SpellsProps> = ({
@@ -15,7 +20,11 @@ export const Spells: React.FC<SpellsProps> = ({
   onSlotChange,
   onAddSpell,
   onTogglePrepared,
-  onRemoveSpell
+  onRemoveSpell,
+  spellcastingAbility,
+  onAbilityChange,
+  saveDC,
+  attackBonus
 }) => {
   const [newSpellName, setNewSpellName] = useState('');
   const [newSpellLevel, setNewSpellLevel] = useState(0);
@@ -38,7 +47,34 @@ export const Spells: React.FC<SpellsProps> = ({
 
   return (
     <div className="spells-container card">
-      <h3>Spells & Magic</h3>
+      <div className="spells-header-row">
+        <h3>Spells & Magic</h3>
+        <div className="spell-stats">
+          <div className="stat-group">
+            <label>Ability</label>
+            <select
+              value={spellcastingAbility}
+              onChange={(e) => onAbilityChange(e.target.value as keyof AbilityScores)}
+              className="ability-select"
+            >
+              <option value="int">INT</option>
+              <option value="wis">WIS</option>
+              <option value="cha">CHA</option>
+              <option value="str">STR</option>
+              <option value="dex">DEX</option>
+              <option value="con">CON</option>
+            </select>
+          </div>
+          <div className="stat-group">
+            <label>Save DC</label>
+            <span className="stat-value">{saveDC}</span>
+          </div>
+          <div className="stat-group">
+            <label>Atk Bonus</label>
+            <span className="stat-value">+{attackBonus}</span>
+          </div>
+        </div>
+      </div>
 
       <div className="add-spell-form">
         <div className="form-row">
@@ -148,6 +184,41 @@ export const Spells: React.FC<SpellsProps> = ({
           height: 100%;
           display: flex;
           flex-direction: column;
+        }
+        .spells-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--spacing-md);
+        }
+        .spells-header-row h3 {
+          margin: 0;
+        }
+        .spell-stats {
+          display: flex;
+          gap: var(--spacing-md);
+        }
+        .stat-group {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .stat-group label {
+          font-size: 0.7rem;
+          color: var(--text-secondary);
+          text-transform: uppercase;
+        }
+        .stat-value {
+          font-weight: bold;
+          color: var(--accent-gold);
+        }
+        .ability-select {
+          background: transparent;
+          color: var(--accent-gold);
+          border: none;
+          font-weight: bold;
+          cursor: pointer;
+          text-transform: uppercase;
         }
         .add-spell-form {
           display: flex;

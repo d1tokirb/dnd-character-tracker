@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import type { Character, AbilityScores, InventoryItem, Feature } from './types';
+import type { Character, AbilityScores, InventoryItem, Feature, Weapon } from './types';
 import { Stats } from './components/Stats';
 import { Combat } from './components/Combat';
 import { Skills } from './components/Skills';
 import { SavingThrows } from './components/SavingThrows';
 import { Inventory } from './components/Inventory';
+import { Weapons } from './components/Weapons';
 import { Features } from './components/Features';
 import { Spells } from './components/Spells';
 import { DiceRoller } from './components/DiceRoller';
@@ -54,6 +55,8 @@ const INITIAL_CHARACTER: Character = {
     { id: '1', name: 'Second Wind', source: 'Fighter 1', description: 'You have a limited well of stamina that you can draw on to protect yourself from harm. On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level.' },
     { id: '2', name: 'Fighting Style (Defense)', source: 'Fighter 1', description: 'While you are wearing armor, you gain a +1 bonus to AC.' }
   ],
+  weapons: [],
+  spellcastingAbility: 'int',
   spells: {
     slots: { 1: { total: 0, used: 0 } },
     list: [],
@@ -165,7 +168,9 @@ function App() {
             skills: loadedData.skills || INITIAL_CHARACTER.skills,
             savingThrows: loadedData.savingThrows || INITIAL_CHARACTER.savingThrows,
             inventory: loadedData.inventory || INITIAL_CHARACTER.inventory,
+            weapons: loadedData.weapons || INITIAL_CHARACTER.weapons,
             features: loadedData.features || INITIAL_CHARACTER.features,
+            spellcastingAbility: loadedData.spellcastingAbility || INITIAL_CHARACTER.spellcastingAbility,
           };
           setCharacter(mergedChar);
         }
@@ -265,7 +270,37 @@ function App() {
     return () => clearTimeout(timer);
   }, [character, session, isInitialLoad, selectedCharacterId]);
 
-  // ... (Auto-level effect remains same)
+  // Level Calculation Helper
+  const calculateLevel = (xp: number) => {
+    if (xp < 300) return 1;
+    if (xp < 900) return 2;
+    if (xp < 2700) return 3;
+    if (xp < 6500) return 4;
+    if (xp < 14000) return 5;
+    if (xp < 23000) return 6;
+    if (xp < 34000) return 7;
+    if (xp < 48000) return 8;
+    if (xp < 64000) return 9;
+    if (xp < 85000) return 10;
+    if (xp < 100000) return 11;
+    if (xp < 120000) return 12;
+    if (xp < 140000) return 13;
+    if (xp < 165000) return 14;
+    if (xp < 195000) return 15;
+    if (xp < 225000) return 16;
+    if (xp < 265000) return 17;
+    if (xp < 305000) return 18;
+    if (xp < 355000) return 19;
+    return 20; // Cap at 20
+  };
+
+  // Auto-level up effect
+  useEffect(() => {
+    const newLevel = calculateLevel(character.details.xp);
+    if (newLevel !== character.level) {
+      setCharacter(prev => ({ ...prev, level: newLevel }));
+    }
+  }, [character.details.xp]);
 
   if (!session) {
     return <Auth />;
@@ -291,6 +326,12 @@ function App() {
 
 
   const proficiencyBonus = Math.ceil(character.level / 4) + 1;
+
+  // Spell Stats Calculation
+  const spellAbilityScore = character.abilities[character.spellcastingAbility];
+  const spellModifier = Math.floor((spellAbilityScore - 10) / 2);
+  const spellSaveDC = 8 + proficiencyBonus + spellModifier;
+  const spellAttackBonus = proficiencyBonus + spellModifier;
 
   const handleHeaderChange = (field: 'name' | 'race' | 'class', value: string) => {
     setCharacter(prev => ({ ...prev, [field]: value }));
@@ -411,6 +452,25 @@ function App() {
     }));
   };
 
+  // Weapons Handlers
+  const handleAddWeapon = (weapon: Omit<Weapon, 'id'>) => {
+    const newWeapon: Weapon = {
+      ...weapon,
+      id: crypto.randomUUID()
+    };
+    setCharacter(prev => ({
+      ...prev,
+      weapons: [...prev.weapons, newWeapon]
+    }));
+  };
+
+  const handleRemoveWeapon = (id: string) => {
+    setCharacter(prev => ({
+      ...prev,
+      weapons: prev.weapons.filter(w => w.id !== id)
+    }));
+  };
+
   // Spells Handlers
   const handleSlotChange = (level: number, type: 'total' | 'used', value: number) => {
     setCharacter(prev => ({
@@ -456,6 +516,10 @@ function App() {
         list: prev.spells.list.filter(s => s.name !== name)
       }
     }));
+  };
+
+  const handleSpellAbilityChange = (ability: keyof AbilityScores) => {
+    setCharacter(prev => ({ ...prev, spellcastingAbility: ability }));
   };
 
   // Details Handler
@@ -573,6 +637,14 @@ function App() {
                 onUpdateItem={handleUpdateItem}
               />
             </section>
+
+            <section className="weapons-section">
+              <Weapons
+                weapons={character.weapons || []}
+                onAddWeapon={handleAddWeapon}
+                onRemoveWeapon={handleRemoveWeapon}
+              />
+            </section>
           </div>
 
           <div className="right-column">
@@ -597,6 +669,10 @@ function App() {
                 onAddSpell={handleAddSpell}
                 onTogglePrepared={handleTogglePrepared}
                 onRemoveSpell={handleRemoveSpell}
+                spellcastingAbility={character.spellcastingAbility}
+                onAbilityChange={handleSpellAbilityChange}
+                saveDC={spellSaveDC}
+                attackBonus={spellAttackBonus}
               />
             </section>
           </div>

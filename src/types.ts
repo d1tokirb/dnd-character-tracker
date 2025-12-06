@@ -13,6 +13,14 @@ export interface Skill {
     proficient: boolean;
 }
 
+export interface Weapon {
+    id: string;
+    name: string;
+    atkBonus: string;
+    damage: string;
+    type: string;
+}
+
 export interface Character {
     name: string;
     race: string;
@@ -30,7 +38,9 @@ export interface Character {
     skills: Skill[];
     savingThrows: Skill[];
     inventory: InventoryItem[];
+    weapons: Weapon[];
     features: Feature[];
+    spellcastingAbility: keyof AbilityScores;
     spells: {
         slots: { [level: number]: { total: number; used: number } };
         list: { name: string; level: number; prepared: boolean; description: string }[];
