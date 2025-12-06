@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
-import type { InventoryItem } from '../types';
+import type { InventoryItem, Currency } from '../types';
 
 interface InventoryProps {
   items: InventoryItem[];
   onAddItem: () => void;
   onRemoveItem: (id: string) => void;
   onUpdateItem: (id: string, field: keyof InventoryItem, value: string | number) => void;
+  currency: Currency;
+  onCurrencyChange: (type: keyof Currency, value: number) => void;
 }
 
-export const Inventory: React.FC<InventoryProps> = ({ items, onAddItem, onRemoveItem, onUpdateItem }) => {
+export const Inventory: React.FC<InventoryProps> = ({
+  items,
+  onAddItem,
+  onRemoveItem,
+  onUpdateItem,
+  currency,
+  onCurrencyChange
+}) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const totalWeight = items.reduce((sum, item) => sum + (item.weight * item.quantity), 0);
@@ -16,6 +25,8 @@ export const Inventory: React.FC<InventoryProps> = ({ items, onAddItem, onRemove
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
   };
+
+  const currencyTypes: (keyof Currency)[] = ['cp', 'sp', 'ep', 'gp', 'pp'];
 
   return (
     <div className="inventory-card card">
@@ -95,6 +106,20 @@ export const Inventory: React.FC<InventoryProps> = ({ items, onAddItem, onRemove
       <button className="add-item-btn" onClick={onAddItem}>
         + Add Item
       </button>
+
+      <div className="currency-container">
+        {currencyTypes.map(type => (
+          <div key={type} className="currency-item">
+            <label>{type.toUpperCase()}</label>
+            <input
+              type="number"
+              min="0"
+              value={currency[type]}
+              onChange={(e) => onCurrencyChange(type, parseInt(e.target.value) || 0)}
+            />
+          </div>
+        ))}
+      </div>
 
       <style>{`
                 .inventory-card {
@@ -230,6 +255,40 @@ export const Inventory: React.FC<InventoryProps> = ({ items, onAddItem, onRemove
                     border-color: var(--accent-gold);
                     color: var(--accent-gold);
                     background-color: rgba(212, 175, 55, 0.1);
+                }
+
+                .currency-container {
+                    display: flex;
+                    justify-content: space-between;
+                    background-color: var(--bg-tertiary);
+                    padding: var(--spacing-sm);
+                    border-radius: 4px;
+                    margin-top: var(--spacing-xs);
+                }
+                .currency-item {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 2px;
+                    flex: 1;
+                }
+                .currency-item label {
+                    font-size: 0.7rem;
+                    color: var(--text-secondary);
+                    font-weight: bold;
+                }
+                .currency-item input {
+                    text-align: center;
+                    background-color: var(--bg-primary);
+                    border: 1px solid var(--border-color);
+                    border-radius: 4px;
+                    padding: 2px;
+                    font-size: 0.9rem;
+                    width: 100%;
+                    max-width: 50px;
+                }
+                .currency-item input:focus {
+                    border-color: var(--accent-gold);
                 }
             `}</style>
     </div>

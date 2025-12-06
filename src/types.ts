@@ -21,6 +21,14 @@ export interface Weapon {
     type: string;
 }
 
+export interface Currency {
+    cp: number;
+    sp: number;
+    ep: number;
+    gp: number;
+    pp: number;
+}
+
 export interface Character {
     name: string;
     race: string;
@@ -39,6 +47,7 @@ export interface Character {
     savingThrows: Skill[];
     inventory: InventoryItem[];
     weapons: Weapon[];
+    currency: Currency;
     features: Feature[];
     spellcastingAbility: keyof AbilityScores;
     spells: {

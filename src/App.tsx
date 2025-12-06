@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Character, AbilityScores, InventoryItem, Feature, Weapon } from './types';
+import type { Character, AbilityScores, InventoryItem, Feature, Weapon, Currency } from './types';
 import { Stats } from './components/Stats';
 import { Combat } from './components/Combat';
 import { Skills } from './components/Skills';
@@ -56,6 +56,7 @@ const INITIAL_CHARACTER: Character = {
     { id: '2', name: 'Fighting Style (Defense)', source: 'Fighter 1', description: 'While you are wearing armor, you gain a +1 bonus to AC.' }
   ],
   weapons: [],
+  currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
   spellcastingAbility: 'int',
   spells: {
     slots: { 1: { total: 0, used: 0 } },
@@ -169,6 +170,7 @@ function App() {
             savingThrows: loadedData.savingThrows || INITIAL_CHARACTER.savingThrows,
             inventory: loadedData.inventory || INITIAL_CHARACTER.inventory,
             weapons: loadedData.weapons || INITIAL_CHARACTER.weapons,
+            currency: loadedData.currency || INITIAL_CHARACTER.currency,
             features: loadedData.features || INITIAL_CHARACTER.features,
             spellcastingAbility: loadedData.spellcastingAbility || INITIAL_CHARACTER.spellcastingAbility,
           };
@@ -422,6 +424,16 @@ function App() {
     }));
   };
 
+  const handleCurrencyChange = (type: keyof Currency, value: number) => {
+    setCharacter(prev => ({
+      ...prev,
+      currency: {
+        ...prev.currency,
+        [type]: value
+      }
+    }));
+  };
+
   // Features Handlers
   const handleAddFeature = () => {
     const newFeature: Feature = {
@@ -635,6 +647,8 @@ function App() {
                 onAddItem={handleAddItem}
                 onRemoveItem={handleRemoveItem}
                 onUpdateItem={handleUpdateItem}
+                currency={character.currency}
+                onCurrencyChange={handleCurrencyChange}
               />
             </section>
 
